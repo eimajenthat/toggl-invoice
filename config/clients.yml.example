@@ -1,0 +1,11 @@
+---
+Initech:
+ name: 'Initech, Inc.'
+ street: '123 N Main St'
+ locality: 'Memphis, TN 38112'
+ rate: 155
+Intertrode:
+ name: 'Intertrode Research Corp'
+ street: '456 Martin Luther King Blvd.'
+ locality: 'Boston, MA 02134'
+ rate: 50

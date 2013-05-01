@@ -1,0 +1,8 @@
+---
+company:
+ name: 'My Super Cool Company'
+ tagline: 'Your source for pure, unadulterated awesome'
+ street: '789 Caribou Ct'
+ locality: 'Fort Yukon, AK 99740'
+ email: 'me@example.com'
+ phone: '555-555-5555'
