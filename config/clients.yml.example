@@ -9,3 +9,8 @@ Intertrode:
  street: '456 Martin Luther King Blvd.'
  locality: 'Boston, MA 02134'
  rate: 50
+John Smith:
+ name: 'John Smith, Esq.'
+ street: '1 My Place'
+ locality: 'Roanoke, VA 24018'
+ rate: 85
