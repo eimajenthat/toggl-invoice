@@ -17,7 +17,7 @@ def main
     'total' => Money.new(0,'USD'),
     'hourly_rate' => Money.new(0,'USD'),
     'header' => ["Description","Hours","Rate","Amount"],
-    'bill_from' => config['company']
+    'bill_from' => config['company'],
     'items' => []
   }
   
