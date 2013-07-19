@@ -4,5 +4,11 @@ company:
  tagline: 'Your source for pure, unadulterated awesome'
  street: '789 Caribou Ct'
  locality: 'Fort Yukon, AK 99740'
- email: 'me@example.com'
+ email: 'me@example.com'						# This is actually required to access Toggl Reports API.  Don't ask.
  phone: '555-555-5555'
+toggl:
+ api_token: '0123456789abcdef0123456789abcdef'	# API token available in account settings area
+ workspace: '123456'							# You can find this in the query string in Reports pages of the app
+freshbooks:
+ api_token: '0123456789abcdef0123456789abcdef'	# API token available in account settings area
+ account: 'supercoolcompany'					# This is the string that goes at the beginning of your Freshbooks URL

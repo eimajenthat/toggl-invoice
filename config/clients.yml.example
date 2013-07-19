@@ -1,5 +1,5 @@
 ---
-Initech:
+Initech:				# Should exactly match Toggl client name
  name: 'Initech, Inc.'
  street: '123 N Main St'
  locality: 'Memphis, TN 38112'
@@ -9,6 +9,9 @@ Intertrode:
  street: '456 Martin Luther King Blvd.'
  locality: 'Boston, MA 02134'
  rate: 50
+ projects: 
+  My Project:			# Should exactly match Toggl project name
+   freshbooks_id: 1
 John Smith:
  name: 'John Smith, Esq.'
  street: '1 My Place'
