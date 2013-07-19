@@ -128,8 +128,9 @@ HERE
 end
 
 def hmsToFloat(str)
+  sign = (str.chr == '-') ? str.slice!(0) : ''
   parts = str.split(':').map(&:to_f)
-  parts[0]+(parts[1]/60)+(parts[2]/3600)
+  (sign+(parts[0]+(parts[1]/60)+(parts[2]/3600)).to_s).to_f
 end
 
 
