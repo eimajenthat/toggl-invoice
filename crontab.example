@@ -1,0 +1,2 @@
+# Run nightly at 12:01AM, silence output
+1 0 * * * ruby /root/toggl-invoice/toggl-freshbooks.rb 2> /dev/null
