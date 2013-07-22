@@ -9,8 +9,8 @@ require 'time'
 
 
 def main
-  $config = YAML.load_file(File.join(File.dirname(__FILE__), 'config/config.yml')) # I know, global vars, eww...
-  $clients = YAML.load_file(File.join(File.dirname(__FILE__), 'config/clients.yml')) # @TODO Refactor this without globals
+  $config = YAML.load_file(File.join(File.dirname(__FILE__),'config','config.yml')) # I know, global vars, eww...
+  $clients = YAML.load_file(File.join(File.dirname(__FILE__),'config','clients.yml')) # @TODO Refactor this without globals
 
   toggl_url = 'https://toggl.com/reports/api/v2/summary'
 
