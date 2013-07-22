@@ -9,7 +9,7 @@ require 'pdfkit'
 
 def main
 
-  config = YAML.load_file('config/config.yml')
+  config = YAML.load_file(File.join(File.dirname(__FILE__), 'config/config.yml'))
   invoice = {
     'date' => Date.today.to_s,
     'number' => Time.now.strftime("%Y%m%d"),
@@ -54,7 +54,7 @@ def main
   csv = CSV.read ARGV[0], :headers => true
   csv.group_by{|row| row['Description']}.values.each do |group|
     if (client.nil?)
-      client = YAML.load_file('config/clients.yml')[group.first['Client']]
+      client = YAML.load_file(File.join(File.dirname(__FILE__), 'config/clients.yml'))[group.first['Client']]
       invoice['bill_to'] = client
       invoice['hourly_rate'] = Money.new(client['rate']*100, "USD")
       invoice_save = "archive/invoice-#{invoice['number']}-#{group.first['Client'].tr('^A-Za-z0-9', '')}."
