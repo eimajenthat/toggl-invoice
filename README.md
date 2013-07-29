@@ -34,7 +34,7 @@ Notes
 + You'll want to setup your config.yml and client.yml before generating invoices.
 + I wrote this for myself, because I needed to generate invoices, not as an example of perfect coding for all to see.  Also, I'm new Ruby, and used this as a chance to learn it better.  Expect rough edges, and feel free to smooth them out.
 + In clients.yml, the key for each client (in the example, client keys are 'Initech', 'Intertrode', and 'John Smith'), should precisely match the client names used in your timesheet CSV.  Spaces are fine.  Quotes do not seem to be required.  Not sure if they're allowed.
-+ On Windows, you will have manually install wkhtmltopdf, set the path to wkhtmltopdf.exe in config/pdfkit.rb, and uncomment the `require './config/pdfkit.rb'` line in toggl-invoice.rb. See [Installing wkhtmltopdf](https://github.com/pdfkit/pdfkit/wiki/Installing-WKHTMLTOPDF#windows).
++ On Windows, you will have manually install wkhtmltopdf (to a path without spaces, such as C:/tools/wkhtmltopdf), set the path to wkhtmltopdf.exe in config/pdfkit.rb, and uncomment the `require './config/pdfkit.rb'` line in toggl-invoice.rb. See [Installing wkhtmltopdf](https://github.com/pdfkit/pdfkit/wiki/Installing-WKHTMLTOPDF#windows).
 
 Forking
 -------
