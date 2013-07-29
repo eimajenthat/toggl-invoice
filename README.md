@@ -17,7 +17,7 @@ Requirements
 
 Usage
 -----
-1. `git clone https://github.com/eimajenthat/toggl-invoice`
+1. `git clone --recursive https://github.com/eimajenthat/toggl-invoice.git`
 2. `cp toggl-invoice/config/config.yml.example toggl-invoice/config/config.yml`
 3. `cp toggl-invoice/config/clients.yml.example toggl-invoice/config/clients.yml`
 4. Edit `toggl-invoice/config/config.yml` to reflect your company identity.  All fields required, though an empty string would probably be okay.
