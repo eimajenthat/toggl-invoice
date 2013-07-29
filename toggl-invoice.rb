@@ -7,6 +7,9 @@ require 'liquid'
 require 'yaml'
 require 'pdfkit'
 
+# uncomment the following on Windows and update config/pdfkit.rb with the wkhtmltopdf.exe path
+# require './config/pdfkit.rb'
+
 def main
 
   config = YAML.load_file(File.join(File.dirname(__FILE__),'config','config.yml'))
