@@ -18,15 +18,17 @@ Requirements
 Usage
 -----
 1. `git clone --recursive https://github.com/eimajenthat/toggl-invoice.git`
-2. `cp toggl-invoice/config/config.yml.example toggl-invoice/config/config.yml`
-3. `cp toggl-invoice/config/clients.yml.example toggl-invoice/config/clients.yml`
-4. Edit `toggl-invoice/config/config.yml` to reflect your company identity.  All fields required, though an empty string would probably be okay.
-5. Edit `toggl-invoice/config/clients.yml` with your client's details.
-6. Download a CSV report from Toggl.
-7. `cd toggl-invoice`
-8. `./toggl-invoice.rb /path/to/report.csv`
-9. You're done.  The generated invoice files are saved to the archive/ directory.
-10. I like to save my raw CSV there as well (add a date code to the file name so it doesn't overwrite another CSV).  I guess I could have the script do this.  Maybe later.
+2. `gem install bundler`
+3. `bundle install --gemfile=toggle-invoice/Gemfile`
+4. `cp toggl-invoice/config/config.yml.example toggl-invoice/config/config.yml`
+5. `cp toggl-invoice/config/clients.yml.example toggl-invoice/config/clients.yml`
+7. Edit `toggl-invoice/config/config.yml` to reflect your company identity.  All fields required, though an empty string would probably be okay.
+7. Edit `toggl-invoice/config/clients.yml` with your client's details.
+8. Download a CSV report from Toggl.
+9. `cd toggl-invoice`
+10. `./toggl-invoice.rb /path/to/report.csv`
+11. You're done.  The generated invoice files are saved to the archive/ directory.
+12. I like to save my raw CSV there as well (add a date code to the file name so it doesn't overwrite another CSV).  I guess I could have the script do this.  Maybe later.
 
 Notes
 -----
