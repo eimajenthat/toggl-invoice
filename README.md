@@ -7,6 +7,7 @@ Disclaimer
 I am not affiliated in any way with Toggl, although they seem like nice folks.  If you encounter a bug with this script, it's not their fault.  On the other hand, if you encounter a bug with their application, it's not my fault.  Please route any questions accordingly.
 
 For Toggl bugs: http://support.toggl.com/
+
 For bugs with my script: https://github.com/eimajenthat/toggl-invoice/issues
 
 Requirements
