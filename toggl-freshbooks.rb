@@ -94,7 +94,6 @@ HERE
   response = requestFreshbooksAPI(list_request)
   xml = REXML::Document.new response
   xml.elements.each("response/time_entries/time_entry/time_entry_id") do |element| 
-    puts element.text
     delete_request = <<HERE
 <?xml version="1.0" encoding="utf-8"?>
 <request method="time_entry.delete">
