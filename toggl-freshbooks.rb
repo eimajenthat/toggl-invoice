@@ -5,7 +5,7 @@ require "base64"
 require 'yaml'
 require 'json'
 require 'time'
-
+require "rexml/document"
 
 
 def main
@@ -38,6 +38,8 @@ def main
 
   exit unless response.code == 200 # This is a cron job, fail silently and don't write bad data
 
+  deleteTime(date) # Delete existing entries for that date, to avoid dupes
+
   JSON.parse(response.to_str)['data'].each do |p| 
     
     project = getFreshbooksId(p['title'])
@@ -58,7 +60,7 @@ end
 
 def enterTime(project, task, hours, note, date)
   url = 'https://'+$config['freshbooks']['account']+'.freshbooks.com/api/2.1/xml-in'
-  xml_request = <<HERE
+  create_request = <<HERE
 <?xml version="1.0" encoding="utf-8"?>
 <request method="time_entry.create">
   <time_entry>
@@ -71,7 +73,42 @@ def enterTime(project, task, hours, note, date)
 </request>
 HERE
 
-  response = RestClient::Request.new(
+  response = requestFreshbooksAPI(create_request)
+
+end
+
+def deleteTime(date)
+  # Before we write all the new time entries, let's delete the existing ones to avoid dupes
+  # http://developers.freshbooks.com/docs/time-entries/#time_entry.delete
+  # will have to parse time_entry.list, then delete each ID, I think
+  
+  list_request = <<HERE
+<?xml version="1.0" encoding="utf-8"?>
+<request method="time_entry.list">
+  <page>1</page>
+  <per_page>1000</per_page>
+  <date_from>#{date}</date_from>
+  <date_to>#{date}</date_to>
+</request>
+HERE
+  response = requestFreshbooksAPI(list_request)
+  xml = REXML::Document.new response
+  xml.elements.each("response/time_entries/time_entry/time_entry_id") do |element| 
+    puts element.text
+    delete_request = <<HERE
+<?xml version="1.0" encoding="utf-8"?>
+<request method="time_entry.delete">
+  <time_entry_id>#{element.text}</time_entry_id>
+</request>
+HERE
+
+  response = requestFreshbooksAPI(delete_request)
+  end
+end
+
+def requestFreshbooksAPI(payload)
+  url = 'https://'+$config['freshbooks']['account']+'.freshbooks.com/api/2.1/xml-in'
+  return RestClient::Request.new(
     :method => :post,
     :url => url,
     :user => $config['freshbooks']['api_token'],
@@ -80,9 +117,8 @@ HERE
       :accept => :xml,
       :content_type => :xml 
     },
-    :payload => xml_request
+    :payload => payload
   ).execute
-
 end
 
 def getFreshbooksId(project)
