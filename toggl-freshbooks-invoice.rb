@@ -7,8 +7,8 @@ require_relative 'lib/freshbooks'
 require_relative 'lib/toggl'
 
 def main
-  $config = YAML.load_file(File.join(File.dirname(__FILE__), 'config', 'config.yml'))
-  $clients = YAML.load_file(File.join(File.dirname(__FILE__), 'config', 'clients.yml')) # @TODO Refactor this without globals
+  config = YAML.load_file(File.join(File.dirname(__FILE__), 'config', 'config.yml'))
+  clients = YAML.load_file(File.join(File.dirname(__FILE__), 'config', 'clients.yml'))
 
   unless ARGV.length == 3
     puts 'Usage: toggl-freshbooks-invoice.rb <START_DATE> <END_DATE> "<CLIENT_NAME>"'
@@ -19,22 +19,22 @@ def main
   end_date = ARGV[1]
   client_name = ARGV[2]
 
-  toggl_response = getTogglSummary($config, start_date, end_date, client_name)
+  toggl_response = getTogglSummary(config, start_date, end_date, client_name)
   toggl_summary = JSON.parse(toggl_response.to_str)
-  invoice_data = generateInvoiceData(toggl_summary, start_date, end_date, client_name)
+  invoice_data = generateInvoiceData(clients, toggl_summary, start_date, end_date, client_name)
   invoice_request = formatInvoiceRequest(invoice_data)
-  freshbooks_response = createInvoice(invoice_request)
+  freshbooks_response = createInvoice(config, invoice_request)
 
   puts freshbooks_response.to_str
   if freshbooks_response.code == 200
     puts
     puts 'A draft of your invoice has been created.'
     puts 'Log in to your FreshBooks account to review and send it.'
-    puts getFreshbooksUrl
+    puts getFreshbooksUrl(config)
   end
 end
 
-def generateInvoiceData(toggl_summary, start_date, end_date, client_name)
+def generateInvoiceData(clients, toggl_summary, start_date, end_date, client_name)
   formatted_date_range = formatDateRange(start_date, end_date)
   total_hours = millisecondsToHours(toggl_summary['total_grand'])
   notes = <<HERE
@@ -45,10 +45,10 @@ Thank you
 HERE
   
   return {
-    'client_id' => getFreshbooksClientId(client_name),
+    'client_id' => getFreshbooksClientId(clients, client_name),
     'status' => 'draft',
     'notes' => notes,
-    'lines' => generateInvoiceLines(toggl_summary, getClientRate(client_name))
+    'lines' => generateInvoiceLines(toggl_summary, getClientRate(clients, client_name))
   }
 end
 
@@ -113,22 +113,22 @@ def formatXmlElement(array, key)
   return "<#{key}>#{array[key]}</#{key}>"
 end
 
-def createInvoice(invoice_request)
-  return requestFreshbooksAPI(invoice_request)
+def createInvoice(config, invoice_request)
+  return requestFreshbooksAPI(invoice_request, config)
 end
 
-def getClientRate(client_name)
-  unless $clients && $clients[client_name] && $clients[client_name]['rate']
+def getClientRate(clients, client_name)
+  unless clients && clients[client_name] && clients[client_name]['rate']
     raise 'Error accessing rate for ' + client_name
   end
-  return $clients[client_name]['rate']
+  return clients[client_name]['rate']
 end
 
-def getFreshbooksClientId(client_name)
-  unless $clients && $clients[client_name] && $clients[client_name]['freshbooks_client_id']
+def getFreshbooksClientId(clients, client_name)
+  unless clients && clients[client_name] && clients[client_name]['freshbooks_client_id']
     raise 'Error accessing freshbooks_client_id for ' + client_name
   end
-  return $clients[client_name]['freshbooks_client_id']
+  return clients[client_name]['freshbooks_client_id']
 end
 
 

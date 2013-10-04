@@ -1,11 +1,10 @@
 require 'rest_client'
 
-# assumes configuration has been loaded to $config
-def requestFreshbooksAPI(payload)
+def requestFreshbooksAPI(payload, config = $config)
   return RestClient::Request.new(
     :method => :post,
-    :url => getFreshbooksUrl('/api/2.1/xml-in'),
-    :user => $config['freshbooks']['api_token'],
+    :url => getFreshbooksUrl(config, '/api/2.1/xml-in'),
+    :user => config['freshbooks']['api_token'],
     :password => 'X',  # Freshbooks API states this can be any string, they use X in examples, I will too
     :headers => { 
       :accept => :xml,
@@ -15,7 +14,6 @@ def requestFreshbooksAPI(payload)
   ).execute
 end
 
-# assumes configuration has been loaded to $config
-def getFreshbooksUrl(path = '/')
-  return 'https://' + $config['freshbooks']['account'] + '.freshbooks.com' + path
+def getFreshbooksUrl(config, path = '/')
+  return 'https://' + config['freshbooks']['account'] + '.freshbooks.com' + path
 end
