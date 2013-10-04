@@ -2,17 +2,16 @@ require 'base64'
 require 'json'
 require 'rest_client'
 
-# assumes configuration has been loaded to $config
 # see https://github.com/toggl/toggl_api_docs/blob/master/reports/summary.md
 # and https://github.com/toggl/toggl_api_docs/blob/master/reports.md
-def getTogglSummary(date_since, date_until, client_name = nil)
+def getTogglSummary(config, date_since, date_until, client_name = nil)
   params = {
-    'user_agent' => $config['company']['email'],
-    'workspace_id' => $config['toggl']['workspace'],
+    'user_agent' => config['company']['email'],
+    'workspace_id' => config['toggl']['workspace'],
     'since' => date_since,
     'until' => date_until
   }
-  params['client_ids'] = getTogglClientId(client_name) unless client_name.nil?
+  params['client_ids'] = getTogglClientId(config, client_name) unless client_name.nil?
 
   response = RestClient::Request.new(
     :method => :get,
@@ -20,7 +19,7 @@ def getTogglSummary(date_since, date_until, client_name = nil)
     :headers => {
       :accept => :json,
       :content_type => :json,
-      :authorization => getTogglAuthHeader,
+      :authorization => getTogglAuthHeader(config),
       :params => params
     }
   ).execute
@@ -32,16 +31,15 @@ def getTogglSummary(date_since, date_until, client_name = nil)
   return response
 end
 
-# assumes configuration has been loaded to $config
 # see https://github.com/toggl/toggl_api_docs/blob/master/chapters/workspaces.md#get-workspace-clients
-def getTogglClientId(client_name)
+def getTogglClientId(config, client_name)
   response = RestClient::Request.new(
     :method => :get,
-    :url => 'https://www.toggl.com/api/v8/workspaces/' + $config['toggl']['workspace'] + '/clients',
+    :url => 'https://www.toggl.com/api/v8/workspaces/' + config['toggl']['workspace'] + '/clients',
     :headers => {
       :accept => :json,
       :content_type => :json,
-      :authorization => getTogglAuthHeader
+      :authorization => getTogglAuthHeader(config)
     }
   ).execute
 
@@ -58,7 +56,6 @@ def getTogglClientId(client_name)
   raise 'Error retrieving Toggl client id for ' + client_name
 end
 
-# assumes configuration has been loaded to $config
-def getTogglAuthHeader
-  return 'Basic ' + Base64.urlsafe_encode64($config['toggl']['api_token'] + ':api_token')
+def getTogglAuthHeader(config)
+  return 'Basic ' + Base64.urlsafe_encode64(config['toggl']['api_token'] + ':api_token')
 end

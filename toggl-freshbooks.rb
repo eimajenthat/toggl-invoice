@@ -18,7 +18,7 @@ def main
   # We can also pass a specific date on the command line.
   date = ARGV.empty? ? (Date.today - 2).to_s : ARGV[0] 
 
-  response = getTogglSummary(date, date)
+  response = getTogglSummary($config, date, date)
 
   deleteTime(date) # Delete existing entries for that date, to avoid dupes
 

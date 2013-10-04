@@ -19,7 +19,7 @@ def main
   end_date = ARGV[1]
   client_name = ARGV[2]
 
-  toggl_response = getTogglSummary(start_date, end_date, client_name)
+  toggl_response = getTogglSummary($config, start_date, end_date, client_name)
   toggl_summary = JSON.parse(toggl_response.to_str)
   invoice_data = generateInvoiceData(toggl_summary, start_date, end_date, client_name)
   invoice_request = formatInvoiceRequest(invoice_data)
