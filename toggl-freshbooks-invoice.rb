@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby-1.9.3-p125@toggl-invoice
 
 require 'json'
-require 'rest_client'
 require 'time'
 require 'yaml'
+require_relative 'lib/freshbooks'
 require_relative 'lib/toggl'
 
 def main
@@ -115,24 +115,6 @@ end
 
 def createInvoice(invoice_request)
   return requestFreshbooksAPI(invoice_request)
-end
-
-def requestFreshbooksAPI(payload)
-  return RestClient::Request.new(
-    :method => :post,
-    :url => getFreshbooksUrl('/api/2.1/xml-in'),
-    :user => $config['freshbooks']['api_token'],
-    :password => 'X',  # Freshbooks API states this can be any string, they use X in examples, I will too
-    :headers => { 
-      :accept => :xml,
-      :content_type => :xml 
-    },
-    :payload => payload
-  ).execute
-end
-
-def getFreshbooksUrl(path = '/')
-  return 'https://' + $config['freshbooks']['account'] + '.freshbooks.com' + path
 end
 
 def getClientRate(client_name)

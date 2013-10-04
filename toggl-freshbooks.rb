@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby-1.9.3-p125@toggl-invoice
 
-require 'rest_client'
 require 'yaml'
 require 'json'
 require 'time'
 require "rexml/document"
+require_relative 'lib/freshbooks'
 require_relative 'lib/toggl'
 
 
@@ -42,7 +42,6 @@ def main
 end
 
 def enterTime(project, task, hours, note, date)
-  url = 'https://'+$config['freshbooks']['account']+'.freshbooks.com/api/2.1/xml-in'
   create_request = <<HERE
 <?xml version="1.0" encoding="utf-8"?>
 <request method="time_entry.create">
@@ -84,23 +83,8 @@ HERE
 </request>
 HERE
 
-  response = requestFreshbooksAPI(delete_request)
+    response = requestFreshbooksAPI(delete_request)
   end
-end
-
-def requestFreshbooksAPI(payload)
-  url = 'https://'+$config['freshbooks']['account']+'.freshbooks.com/api/2.1/xml-in'
-  return RestClient::Request.new(
-    :method => :post,
-    :url => url,
-    :user => $config['freshbooks']['api_token'],
-    :password => 'X',  # Freshbooks API states this can be any string, they use X in examples, I will too
-    :headers => { 
-      :accept => :xml,
-      :content_type => :xml 
-    },
-    :payload => payload
-  ).execute
 end
 
 def getFreshbooksId(project)
