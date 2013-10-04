@@ -4,11 +4,13 @@ Initech:				# Should exactly match Toggl client name
  street: '123 N Main St'
  locality: 'Memphis, TN 38112'
  rate: 155
+ freshbooks_client_id: 1001		# Only required if using toggl-freshbooks-invoice.rb
 Intertrode:
  name: 'Intertrode Research Corp'
  street: '456 Martin Luther King Blvd.'
  locality: 'Boston, MA 02134'
  rate: 50
+ freshbooks_client_id: 1002
  projects: 
   My Project:			# Should exactly match Toggl project name
    freshbooks_id: 1
@@ -17,3 +19,4 @@ John Smith:
  street: '1 My Place'
  locality: 'Roanoke, VA 24018'
  rate: 85
+ freshbooks_client_id: 1003
