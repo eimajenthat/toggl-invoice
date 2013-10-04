@@ -20,8 +20,6 @@ def main
 
   response = getTogglSummary(date, date)
 
-  exit unless response.code == 200 # This is a cron job, fail silently and don't write bad data
-
   deleteTime(date) # Delete existing entries for that date, to avoid dupes
 
   JSON.parse(response.to_str)['data'].each do |p| 

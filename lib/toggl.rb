@@ -38,7 +38,7 @@ def getTogglClientId(client_name)
   response = RestClient::Request.new(
     :method => :get,
     :url => 'https://www.toggl.com/api/v8/workspaces/' + $config['toggl']['workspace'] + '/clients',
-    :headers => { 
+    :headers => {
       :accept => :json,
       :content_type => :json,
       :authorization => getTogglAuthHeader
