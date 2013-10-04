@@ -1,40 +1,23 @@
 #!/usr/bin/env ruby-1.9.3-p125@toggl-invoice
 
 require 'rest_client'
-require "base64"
 require 'yaml'
 require 'json'
 require 'time'
 require "rexml/document"
+require_relative 'lib/toggl'
 
 
 def main
   $config = YAML.load_file(File.join(File.dirname(__FILE__),'config','config.yml')) # I know, global vars, eww...
   $clients = YAML.load_file(File.join(File.dirname(__FILE__),'config','clients.yml')) # @TODO Refactor this without globals
 
-  toggl_url = 'https://toggl.com/reports/api/v2/summary'
-
   # In cron, we're going to run this at midnight, and get times, not from the day that just ended,
   # but the prior one, allowing 24 hrs for modifications
   # We can also pass a specific date on the command line.
   date = ARGV.empty? ? (Date.today - 2).to_s : ARGV[0] 
 
-  response = RestClient::Request.new(
-    :method => :get,
-    :url => toggl_url,
-    :headers => { 
-      :accept => :json,
-      :content_type => :json, 
-      :authorization => 'Basic '+Base64.urlsafe_encode64($config['toggl']['api_token']+':api_token'),
-      :params => {
-        'since' => date,
-        'until' => date,
-        'user_agent' => $config['company']['email'],
-        'workspace_id' => $config['toggl']['workspace'],
-        'api_token' => $config['toggl']['api_token']
-      }
-    },
-  ).execute
+  response = getTogglSummary(date, date)
 
   exit unless response.code == 200 # This is a cron job, fail silently and don't write bad data
 
