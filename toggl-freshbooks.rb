@@ -4,6 +4,7 @@ require 'yaml'
 require 'json'
 require 'time'
 require "rexml/document"
+require_relative 'lib/datetime'
 require_relative 'lib/freshbooks'
 require_relative 'lib/toggl'
 
@@ -95,12 +96,6 @@ def getFreshbooksId(project)
   else
     return false
   end
-end
-
-def millisecondsToHours(t)
-  # Round up to the nearest hundredth of an hour
-  # We could go to whole hours, tenths, or even thousandths, simply by moving zeroes, but hundredths works for me
-  (t.to_f/36000).ceil.to_f/100
 end
 
 def pickTaskNumber(desc)
