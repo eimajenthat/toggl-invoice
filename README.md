@@ -28,6 +28,7 @@ cp toggl-invoice/config/clients.yml.example toggl-invoice/config/client.yml
 ```
 
 Then, edit:
+
 1. `toggl-invoice/config/config.yml` to reflect your company identity.  All fields required, though an empty string would probably be okay.
 2. `toggl-invoice/config/clients.yml` with your client's details.
 
