@@ -24,7 +24,7 @@ git clone --recursive https://github.com/eimajenthat/toggl-invoice.git
 gem install bundler
 bundle install --gemfile=toggl-invoice/Gemfile
 cp toggl-invoice/config/config.yml.example toggl-invoice/config/config.yml
-cp toggl-invoice/config/clients.yml.example toggl-invoice/config/client.yml
+cp toggl-invoice/config/clients.yml.example toggl-invoice/config/clients.yml
 ```
 
 Then, edit:
