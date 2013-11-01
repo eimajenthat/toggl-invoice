@@ -18,13 +18,19 @@ Requirements
 
 Setup
 -----
-1. `git clone --recursive https://github.com/eimajenthat/toggl-invoice.git`
-2. `gem install bundler`
-3. `bundle install --gemfile=toggle-invoice/Gemfile`
-4. `cp toggl-invoice/config/config.yml.example toggl-invoice/config/config.yml`
-5. `cp toggl-invoice/config/clients.yml.example toggl-invoice/config/clients.yml`
-7. Edit `toggl-invoice/config/config.yml` to reflect your company identity.  All fields required, though an empty string would probably be okay.
-7. Edit `toggl-invoice/config/clients.yml` with your client's details.
+
+```bash
+git clone --recursive https://github.com/eimajenthat/toggl-invoice.git
+gem install bundler
+bundle install --gemfile=toggl-invoice/Gemfile
+cp toggl-invoice/config/config.yml.example toggl-invoice/config/config.yml
+cp toggl-invoice/config/clients.yml.example toggl-invoice/config/clients.yml
+```
+
+Then, edit:
+
+1. `toggl-invoice/config/config.yml` to reflect your company identity.  All fields required, though an empty string would probably be okay.
+2. `toggl-invoice/config/clients.yml` with your client's details.
 
 Usage
 -----
