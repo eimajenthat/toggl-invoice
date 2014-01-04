@@ -6,6 +6,7 @@ require 'yaml'
 require 'json'
 require 'time'
 require "rexml/document"
+require 'date'
 
 
 def main
@@ -17,42 +18,47 @@ def main
   # In cron, we're going to run this at midnight, and get times, not from the day that just ended,
   # but the prior one, allowing 24 hrs for modifications
   # We can also pass a specific date on the command line.
-  date = ARGV.empty? ? (Date.today - 2).to_s : ARGV[0] 
-
-  response = RestClient::Request.new(
-    :method => :get,
-    :url => toggl_url,
-    :headers => { 
-      :accept => :json,
-      :content_type => :json, 
-      :authorization => 'Basic '+Base64.urlsafe_encode64($config['toggl']['api_token']+':api_token'),
-      :params => {
-        'since' => date,
-        'until' => date,
-        'user_agent' => $config['company']['email'],
-        'workspace_id' => $config['toggl']['workspace'],
-        'api_token' => $config['toggl']['api_token']
-      }
-    },
-  ).execute
-
-  exit unless response.code == 200 # This is a cron job, fail silently and don't write bad data
-
-  deleteTime(date) # Delete existing entries for that date, to avoid dupes
-
-  JSON.parse(response.to_str)['data'].each do |p| 
+  start_date = ARGV.empty? ? (Date.today - 2).to_s : ARGV[0]
+  end_date = ARGV[1] ||= start_date
+  
+  (Date.parse(start_date)..Date.parse(end_date)).map do |date| 
+    date = date.strftime("%Y-%m-%d")
     
-    project = getFreshbooksId(p['title'])
+    response = RestClient::Request.new(
+      :method => :get,
+      :url => toggl_url,
+      :headers => { 
+        :accept => :json,
+        :content_type => :json, 
+        :authorization => 'Basic '+Base64.urlsafe_encode64($config['toggl']['api_token']+':api_token'),
+        :params => {
+          'since' => date,
+          'until' => date,
+          'user_agent' => $config['company']['email'],
+          'workspace_id' => $config['toggl']['workspace'],
+          'api_token' => $config['toggl']['api_token']
+        }
+      },
+    ).execute
 
-    if project
-      p['items'].each do |i|
-        enterTime(
-          project,
-          pickTaskNumber(i['title']['time_entry']),
-          millisecondsToHours(i['time']),
-          i['title']['time_entry'],
-          date
-        )
+    exit unless response.code == 200 # This is a cron job, fail silently and don't write bad data
+
+    deleteTime(date) # Delete existing entries for specified date, to avoid dupes
+
+    JSON.parse(response.to_str)['data'].each do |p| 
+    
+      project = getFreshbooksId(p['title'])
+
+      if project
+        p['items'].each do |i|
+          enterTime(
+            project,
+            pickTaskNumber(i['title']['time_entry']),
+            millisecondsToHours(i['time']),
+            i['title']['time_entry'],
+            date
+          )
+        end
       end
     end
   end
@@ -101,7 +107,7 @@ HERE
 </request>
 HERE
 
-  response = requestFreshbooksAPI(delete_request)
+    response = requestFreshbooksAPI(delete_request)
   end
 end
 
