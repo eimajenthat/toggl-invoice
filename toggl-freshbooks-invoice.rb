@@ -110,7 +110,7 @@ HERE
 end
 
 def formatXmlElement(array, key)
-  return "<#{key}>#{array[key]}</#{key}>"
+  return "<#{key}>#{array[key].to_s.encode(:xml => :text)}</#{key}>"
 end
 
 def createInvoice(config, invoice_request)
