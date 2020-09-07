@@ -1,51 +1,28 @@
 #!/usr/bin/env ruby-1.9.3-p125@toggl-invoice
 
-require 'rest_client'
-require "base64"
 require 'yaml'
 require 'json'
 require 'time'
 require "rexml/document"
-require 'date'
+require_relative 'lib/datetime'
+require_relative 'lib/freshbooks'
+require_relative 'lib/toggl'
 
 
 def main
   $config = YAML.load_file(File.join(File.dirname(__FILE__),'config','config.yml')) # I know, global vars, eww...
   $clients = YAML.load_file(File.join(File.dirname(__FILE__),'config','clients.yml')) # @TODO Refactor this without globals
 
-  toggl_url = 'https://toggl.com/reports/api/v2/summary'
-
   # In cron, we're going to run this at midnight, and get times, not from the day that just ended,
   # but the prior one, allowing 24 hrs for modifications
   # We can also pass a specific date on the command line.
-  start_date = ARGV.empty? ? (Date.today - 2).to_s : ARGV[0]
-  end_date = ARGV[1] ||= start_date
-  
-  (Date.parse(start_date)..Date.parse(end_date)).map do |date| 
-    date = date.strftime("%Y-%m-%d")
-    
-    response = RestClient::Request.new(
-      :method => :get,
-      :url => toggl_url,
-      :headers => { 
-        :accept => :json,
-        :content_type => :json, 
-        :authorization => 'Basic '+Base64.urlsafe_encode64($config['toggl']['api_token']+':api_token'),
-        :params => {
-          'since' => date,
-          'until' => date,
-          'user_agent' => $config['company']['email'],
-          'workspace_id' => $config['toggl']['workspace'],
-          'api_token' => $config['toggl']['api_token']
-        }
-      },
-    ).execute
+  date = ARGV.empty? ? (Date.today - 2).to_s : ARGV[0] 
 
-    exit unless response.code == 200 # This is a cron job, fail silently and don't write bad data
+  response = getTogglSummary($config, date, date)
 
-    deleteTime(date) # Delete existing entries for specified date, to avoid dupes
+  deleteTime(date) # Delete existing entries for that date, to avoid dupes
 
-    JSON.parse(response.to_str)['data'].each do |p| 
+  JSON.parse(response.to_str)['data'].each do |p| 
     
       project = getFreshbooksId(p['title'])
 
@@ -65,7 +42,6 @@ def main
 end
 
 def enterTime(project, task, hours, note, date)
-  url = 'https://'+$config['freshbooks']['account']+'.freshbooks.com/api/2.1/xml-in'
   create_request = <<HERE
 <?xml version="1.0" encoding="utf-8"?>
 <request method="time_entry.create">
@@ -111,21 +87,6 @@ HERE
   end
 end
 
-def requestFreshbooksAPI(payload)
-  url = 'https://'+$config['freshbooks']['account']+'.freshbooks.com/api/2.1/xml-in'
-  return RestClient::Request.new(
-    :method => :post,
-    :url => url,
-    :user => $config['freshbooks']['api_token'],
-    :password => 'X',  # Freshbooks API states this can be any string, they use X in examples, I will too
-    :headers => { 
-      :accept => :xml,
-      :content_type => :xml 
-    },
-    :payload => payload
-  ).execute
-end
-
 def getFreshbooksId(project)
   p = project['project']
   c = project['client']
@@ -134,12 +95,6 @@ def getFreshbooksId(project)
   else
     return false
   end
-end
-
-def millisecondsToHours(t)
-  # Round up to the nearest hundredth of an hour
-  # We could go to whole hours, tenths, or even thousandths, simply by moving zeroes, but hundredths works for me
-  (t.to_f/36000).ceil.to_f/100
 end
 
 def pickTaskNumber(desc)
