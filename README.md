@@ -42,7 +42,6 @@ Usage
 
 Notes
 -----
-+ Right now, you need a CSV export from Toggl for this to work.  They're supposed to be working on a reporting API (https://github.com/toggl/toggl_api_docs/issues/3) but it's not ready yet.  Do the Detailed report, not the Summary.  The summary puts everything in a single line item.  The detailed one gives you each interval.  Toggl-Invoice will combine lines with the same description, and add up the time (the same way the PDF sumamry does).
 + You'll want to setup your config.yml and client.yml before generating invoices.
 + I wrote this for myself, because I needed to generate invoices, not as an example of perfect coding for all to see.  Also, I'm new Ruby, and used this as a chance to learn it better.  Expect rough edges, and feel free to smooth them out.
 + In clients.yml, the key for each client (in the example, client keys are 'Initech', 'Intertrode', and 'John Smith'), should precisely match the client names used in your timesheet CSV.  Spaces are fine.  Quotes are optional unless your company name has characters that are special in YAML (mainly `:` and `-`, plus [some others](https://stackoverflow.com/questions/19109912/do-i-need-quotes-for-strings-in-yaml))
